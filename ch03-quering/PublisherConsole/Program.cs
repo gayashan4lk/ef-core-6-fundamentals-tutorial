@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using PublisherData;
 using PublisherDomain;
 
@@ -23,13 +24,33 @@ void QueryFilters(string name)
 		.Include(author => author.Books)
 		.ToList();
 
-	Console.WriteLine("== Search Results ==");
+	try
+	{
+		var jsonSettings = new JsonSerializerSettings
+		{
+			ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+		};
+
+		Console.WriteLine("== Printing objects ==");
+
+		foreach (var author in authors)
+		{
+			var jsonStr = JsonConvert.SerializeObject(author, Formatting.Indented, jsonSettings);
+			Console.WriteLine(jsonStr);
+		}
+	}
+	catch (Exception ex)
+	{
+		Console.WriteLine(ex.Message);
+	}
+
+	/*Console.WriteLine("== Search Results ==");
 
 	foreach (var author in authors)
 	{
 		Console.WriteLine($"{author.FirstName} {author.LastName}");
 		Console.WriteLine($"No of books {author.Books.Count}");
-	}
+	}*/
 }
 
 void GetAuthors()

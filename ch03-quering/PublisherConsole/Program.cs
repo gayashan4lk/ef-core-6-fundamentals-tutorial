@@ -12,6 +12,25 @@ using (PubContext context = new PubContext())
 // GetAuthors();
 AddAuthorWithBooks();
 GetAuthorsWithBooks();
+QueryFilters("Eon");
+
+void QueryFilters(string name)
+{
+	using var context = new PubContext();
+
+	var authors = context.Authors
+		.Where(s => s.FirstName == name)
+		.Include(author => author.Books)
+		.ToList();
+
+	Console.WriteLine("== Search Results ==");
+
+	foreach (var author in authors)
+	{
+		Console.WriteLine($"{author.FirstName} {author.LastName}");
+		Console.WriteLine($"No of books {author.Books.Count}");
+	}
+}
 
 void GetAuthors()
 {
